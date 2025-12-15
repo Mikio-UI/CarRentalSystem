@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentWheels - Car Rental System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #FFF; color: #333; line-height: 1.6; }
+        
+        nav { background: #FFF; border-bottom: 2px solid #E5E5E5; padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        .nav-container {
+    max-width: 1200px;
+    margin: 0 8rem;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+}
+        .logo img {
+    height: 100px;      /* 👈 change this to scale */
+    width: auto;
+    object-fit: contain;
+}
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: #333; transition: color 0.3s; }
+        .nav-links a:hover { color: #4A90E2; }
+        .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0 auto;      /* 👈 centers the menu */
+}
+        .nav-btn { background: #4A90E2; color: white; padding: 0.5rem 1.5rem; border-radius: 5px; text-decoration: none; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .page { display: none; } .page.active { display: block; }
+        
+        .hero { background: linear-gradient(135deg, #4A90E2, #357ABD); color: white; padding: 4rem 2rem; text-align: center; border-radius: 10px; margin-bottom: 3rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        
+        .card { background: white; border: 1px solid #E5E5E5; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .car-image { width: 100%; height: 200px; background: #F5F5F5; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #999; font-size: 2rem; }
+        
+        .btn { background: #4A90E2; color: white; padding: 0.75rem 2rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background 0.3s; }
+        .btn:hover { background: #357ABD; }
+        .btn-secondary { background: #F5F5F5; color: #333; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid #E5E5E5; border-radius: 5px; font-size: 1rem; }
+        .form-group input:focus { outline: none; border-color: #4A90E2; }
+        
+        .search-bar { background: white; border: 1px solid #E5E5E5; border-radius: 10px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        
+        .summary-box { background: #F5F5F5; border: 1px solid #E5E5E5; border-radius: 10px; padding: 1.5rem; margin-top: 1rem; }
+        .summary-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #E5E5E5; }
+        .summary-item:last-child { border-bottom: none; font-weight: bold; font-size: 1.2rem; padding-top: 1rem; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #E5E5E5; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #E5E5E5; }
+        th { background: #F5F5F5; font-weight: 600; }
+        
+        .alert { background: #D4EDDA; border: 1px solid #C3E6CB; color: #155724; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; }
+        
+        @media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 1.8rem; } .card-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Journey Logo">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('listings')">Cars</a></li>
+                <li><a href="#" onclick="showPage('reviews')">Reviews</a></li>
+                <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+            </ul>
+            <a href="#" class="nav-btn" onclick="showPage('login')">Login</a>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="hero">
+            <h1>Find Your Perfect Ride</h1>
+            <p>Rent premium cars at affordable prices</p>
+            <button class="btn" onclick="showPage('listings')">Browse Cars</button>
+        </div>
+        <div class="container">
+            <h2 style="margin-bottom: 1.5rem;">Featured Cars</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="car-image">🚙</div>
+                    <h3>Toyota Camry 2023</h3>
+                    <p>Sedan • Automatic • 5 Seats</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2; margin: 1rem 0;">₱2,250/day</p>
+                    <button class="btn" onclick="showPage('details')">View Details</button>
+                </div>
+                <div class="card">
+                    <div class="car-image">🚗</div>
+                    <h3>Honda Civic 2023</h3>
+                    <p>Sedan • Automatic • 5 Seats</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2; margin: 1rem 0;">₱2,000/day</p>
+                    <button class="btn" onclick="showPage('details')">View Details</button>
+                </div>
+                <div class="card">
+                    <div class="car-image">⚡</div>
+                    <h3>Tesla Model 3 2024</h3>
+                    <p>Electric • Automatic • 5 Seats</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2; margin: 1rem 0;">₱4,000/day</p>
+                    <button class="btn" onclick="showPage('details')">View Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="listings" class="page">
+        <div class="container">
+            <h1>Available Cars</h1>
+            <div class="search-bar">
+                <h3 style="margin-bottom: 1rem;">Search & Filter</h3>
+                <div class="search-grid">
+                    <div class="form-group"><label>Pickup Date</label><input type="date"></div>
+                    <div class="form-group"><label>Return Date</label><input type="date"></div>
+                    <div class="form-group">
+                        <label>Car Type</label>
+                        <select><option>All</option><option>Sedan</option><option>SUV</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price Range</label>
+                        <select><option>Any</option><option>₱0-₱2,500</option><option>₱2,500+</option></select>
+                    </div>
+                </div>
+                <button class="btn">Search</button>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="car-image">🚙</div>
+                    <h3>Toyota Camry 2023</h3>
+                    <p>⭐ 4.5 (120 reviews)</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2;">₱2,250/day</p>
+                    <button class="btn" onclick="showPage('details')">Details</button>
+                </div>
+                <div class="card">
+                    <div class="car-image">🚗</div>
+                    <h3>Honda Civic 2023</h3>
+                    <p>⭐ 4.7 (95 reviews)</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2;">₱2000/day</p>
+                    <button class="btn" onclick="showPage('details')">Details</button>
+                </div>
+                <div class="card">
+                    <div class="car-image">🚙</div>
+                    <h3>Ford Explorer 2023</h3>
+                    <p>⭐ 4.6 (80 reviews)</p>
+                    <p style="font-size: 1.5rem; color: #4A90E2;">₱3,250/day</p>
+                    <button class="btn" onclick="showPage('details')">Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="details" class="page">
+        <div class="container">
+            <button class="btn btn-secondary" onclick="showPage('listings')">← Back</button>
+            <h1 style="margin: 1rem 0;">Toyota Camry 2023</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="car-image" style="height: 300px; font-size: 4rem;">🚙</div>
+                    <p style="font-size: 2rem; color: #4A90E2;">₱2,250/day</p>
+                    <p>⭐ 4.5 (120 reviews)</p>
+                    <div class="card">
+                        <h3>Specifications</h3>
+                        <p>• Sedan • Automatic</p>
+                        <p>• 5 Seats • Gasoline</p>
+                    </div>
+                    <div class="card">
+                        <h3>Features</h3>
+                        <p>✓ AC ✓ Bluetooth ✓ GPS</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Book This Car</h3>
+                    <div class="form-group"><label>Pickup</label><input type="date"></div>
+                    <div class="form-group"><label>Return</label><input type="date"></div>
+                    <div class="summary-box">
+                        <div class="summary-item"><span>Days</span><span>3</span></div>
+                        <div class="summary-item"><span>Total</span><span>₱6,750</span></div>
+                    </div>
+                    <button class="btn" style="width:100%;" onclick="showPage('booking')">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login" class="page">
+        <div class="container" style="max-width: 500px;">
+            <div class="card">
+                <h1 style="text-align: center; margin-bottom: 2rem;">Login</h1>
+                <form onsubmit="handleLogin(event)">
+                    
+                    <div class="form-group"><label>Email</label><input type="email" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" required></div>
+                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                    <p style="text-align: center; margin-top: 1rem;">
+                        <a href="#" onclick="showPage('register')" style="color: #4A90E2;">Register</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="register" class="page">
+        <div class="container" style="max-width: 500px;">
+            <div class="card">
+                <h1 style="text-align: center; margin-bottom: 2rem;">Register</h1>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group"><label>Name</label><input type="text" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" required></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" required></div>
+                    <button type="submit" class="btn" style="width: 100%;">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="booking" class="page">
+        <div class="container">
+            <h1>Complete Booking</h1>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <div>
+                    <div class="card">
+                        <h3>Rental Details</h3>
+                        <div class="form-group"><label>Pickup Date</label><input type="datetime-local"></div>
+                        <div class="form-group"><label>Return Date</label><input type="datetime-local"></div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <select><option>Downtown</option><option>Airport</option></select>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Driver Info</h3>
+                        <div class="form-group"><label>License</label><input type="text"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Summary</h3>
+                    <p><strong>Toyota Camry 2023</strong></p>
+                    <div class="summary-box">
+                        <div class="summary-item"><span>Days</span><span>3</span></div>
+                        <div class="summary-item"><span>Total</span><span>₱7,425</span></div>
+                    </div>
+                    <button class="btn" style="width:100%;" onclick="showPage('payment')">Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment" class="page">
+        <div class="container" style="max-width: 800px;">
+            <h1>Payment</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="card">
+                    <h3>Card Details</h3>
+                    <div class="form-group"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM/YY"></div>
+                        <div class="form-group"><label>CVV</label><input type="text" placeholder="123"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Order Summary</h3>
+                    <p><strong>Toyota Camry 2023</strong></p>
+                    <div class="summary-box">
+                        <div class="summary-item"><span>Subtotal</span><span>₱6,750</span></div>
+                        <div class="summary-item"><span>Tax</span><span>₱675</span></div>
+                        <div class="summary-item"><span>Total</span><span>₱7,425</span></div>
+                    </div>
+                    <button class="btn" style="width:100%;" onclick="confirmPayment()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="page">
+        <div class="container">
+            <h1>Dashboard</h1>
+            <div class="card">
+                <h3>Active Bookings</h3>
+                <table>
+                    <tr><th>Car</th><th>Dates</th><th>Status</th></tr>
+                    <tr><td>Toyota Camry</td><td>Dec 20-23</td><td>Active</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Booking History</h3>
+                <table>
+                    <tr><th>Car</th><th>Dates</th><th>Cost</th></tr>
+                    <tr><td>Honda Civic</td><td>Nov 10-13</td><td>₱6,000</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="reviews" class="page">
+        <div class="container">
+            <h1>Customer Reviews</h1>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>John D.</strong>
+                    <span style="color: #FFD700;">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p style="margin-top: 0.5rem;">Great service!</p>
+            </div>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>Sarah M.</strong>
+                    <span style="color: #FFD700;">⭐⭐⭐⭐</span>
+                </div>
+                <p style="margin-top: 0.5rem;">Clean cars, easy process.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin" class="page">
+        <div class="container">
+            <h1>Admin Panel</h1>
+            <div class="card">
+                <h3>Manage Cars</h3>
+                <button class="btn">Add New Car</button>
+                <table style="margin-top: 1rem;">
+                    <tr><th>Car</th><th>Status</th><th>Actions</th></tr>
+                    <tr><td>Toyota Camry</td><td>Available</td><td><button class="btn-secondary btn">Edit</button></td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Recent Bookings</h3>
+                <table>
+                    <tr><th>Customer</th><th>Car</th><th>Dates</th></tr>
+                    <tr><td>John Doe</td><td>Camry</td><td>Dec 20-23</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            alert('Login successful!');
+            showPage('dashboard');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            alert('Registration successful!');
+            showPage('login');
+        }
+
+        function confirmPayment() {
+            alert('Payment successful! Booking confirmed.');
+            showPage('dashboard');
+        }
+    </script>
+</body>
+</html>
